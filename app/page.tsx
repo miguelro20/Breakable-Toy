@@ -3,8 +3,9 @@ import NewToDo from "@/components/new-todo";
 import SearchBar from "@/components/search-bar";
 import { ToDoTable } from "@/components/todo-table";
 import TimeTable from "@/components/ttf-table";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { ToDo } from "./interfaces/to-do";
+import { FilterContext } from "./context";
 
 
 interface toDoData {
@@ -15,21 +16,13 @@ interface toDoData {
 
 export default function Home() {
   const [toDoData, setToDoData] = useState<toDoData>();
-  const [filters, setFilters]= useState({
-    name: '',
-    status:'',
-    priority:'',
-    page:"0",
-    size: "10",
-    sortBy:'id',
-    sortDir:'asc'
-  })
+  const {filters, setFilters}=useContext(FilterContext)
 
   const [lastId, setLastId]= useState<Number>(100)
 
   useEffect(()=> {
     const fetchData= async() => {
-      const params= new URLSearchParams(filters)
+      const params= new URLSearchParams(filters) 
       const response = await fetch(`http://localhost:9090/api/todos?${params}`)
       console.log(response)
       const result= await response.json()
