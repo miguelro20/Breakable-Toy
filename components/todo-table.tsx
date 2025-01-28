@@ -10,15 +10,18 @@ import {
     TableRow,
   } from "@/components/ui/table"
 import { Button } from "./ui/button"
-import { Check, X} from "lucide-react"
+import { Check, ChevronLeft, ChevronRight, X} from "lucide-react"
 import { useState } from "react"
 import { Label } from "./ui/label"
-
-interface toDos {
-  toDos: ToDo[]
-}
   
-  export function ToDoTable({toDos, onPageChange, currentPage, totalPages}:{toDos:toDos}) {
+interface ToDoTableProps{
+  toDos:ToDo[], 
+  onPageChange:(currentPage:number)=> void, 
+  currentPage: number, 
+  totalPages: number
+}
+
+  export function ToDoTable({toDos, onPageChange, currentPage, totalPages}: ToDoTableProps) {
 
     const [isOpen, setIsOpen]= useState(false)
 
@@ -77,18 +80,18 @@ interface toDos {
         </TableBody>
         <TableFooter>
       <TableRow>
-        <TableCell colSpan={3}>Page {currentPage}</TableCell>
+        <TableCell colSpan={5}>Page {currentPage}</TableCell>
         <TableCell className="text-right">
           <Button onClick={()=>onPageChange(currentPage-1)} 
           disabled={currentPage === 0}
           >
-            &lt;
+            <ChevronLeft/>
           </Button>
-          <Label>{currentPage+1}</Label>
+          <Label> {currentPage+1} </Label>
           <Button onClick={()=> onPageChange(currentPage+1)} 
           disabled={currentPage === totalPages-1}
           >
-            &gt;
+          <ChevronRight/>
           </Button>
         </TableCell>
       </TableRow>
