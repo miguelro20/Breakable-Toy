@@ -25,13 +25,14 @@ export default function SearchBar({onSearch, onClear}: SearchBarProps) {
   const [name, setName]= useState("")
 
     return (
-        <div className="border border-gray-300 rounded-md justify-center">
-            <div className="flex w-1/4 ">            
-            <Label htmlFor="text" className="text-lg text-black">Name</Label>
-            <Input type="text" placeholder="Enter Name" className="ml-2 p-2 text-center rounded-md bg-white" onChange={(e)=> setName(e.target.value)}/>
+        <div className="border border-gray-300 rounded-md rounded-md p-4">
+            <div className="flex gap-4">
+                <div className="flex flex-col w-1/4 ">            
+            <Label htmlFor="text" className="text-lg text-black mb-1">Name</Label>
+            <Input type="text" placeholder="Enter Name" className="p-2 text-center rounded-md bg-white border border-gray-300" onChange={(e)=> setName(e.target.value)}/>
             </div>
-            <div className="flex flex-row mt-2">
-                <div className="flex flex-col">
+            <div >
+                <div className="flex gap-4">
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline">Priority: {priority}</Button>
@@ -62,9 +63,14 @@ export default function SearchBar({onSearch, onClear}: SearchBarProps) {
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
+            <div className="flex gap-4">
                 <Button size='lg' className="flex bg-slate-200 text-black justify-end" onClick={()=>onSearch(name, priority, state)}>Search</Button>
                 <Button size='lg' className="flex bg-slate-200 text-black justify-end" onClick={()=>{onClear(); setPriority(""), setName(""), setState("")}}>Clear</Button>
             </div>
+                 
+            </div>
         </div>
+        </div>
+        
     )
 }
