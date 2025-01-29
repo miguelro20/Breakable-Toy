@@ -10,19 +10,52 @@ import {
   } from "@/components/ui/table"
 import { Button } from "./ui/button"
 import { ChevronLeft, ChevronRight, X} from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Label } from "./ui/label"
 import { Checkbox } from "./ui/checkbox"
+import UpdateModal from "./update-modal"
+import useFilters from "@/app/hooks/useFilters"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
   
 interface ToDoTableProps{
   toDos:ToDo[], 
   onPageChange:(currentPage:number)=> void, 
-  currentPage: number, 
   totalPages: number
+  fetchFunction: ()=>void
 }
-  export function ToDoTable({toDos, onPageChange, currentPage, totalPages}: ToDoTableProps) {
+  export function ToDoTable({toDos, onPageChange, totalPages, fetchFunction}: ToDoTableProps) {
 
-    const [isOpen, setIsOpen]= useState(false)
+
+    const [isModalOpen, setIsModalOpen]= useState(false)
+    const[selectedToDo, setSelectedToDo]= useState<ToDo|null>()||(null)
+    const {filters, setFilters}= useFilters()
+    const currentPage= Number(filters.page)
+    const [sortBy, setSortBy]=useState("id")
+
+
+    const toggleModal = () => {
+      setIsModalOpen(!isModalOpen);
+      setSelectedToDo(null)
+    };
+
+    const handleSortBy=() =>{
+      setFilters((prev)=> ({
+        ...prev,
+        sortBy})
+      )
+    }
+
+    useEffect(()=> {
+        handleSortBy()
+      }, [sortBy])
 
     const handleDelete = async (id: number) => {
       try {
@@ -38,7 +71,7 @@ interface ToDoTableProps{
           throw new Error('Failed to delete');
         }
         alert('Item deleted successfully!');
-        window.location.reload();
+        fetchFunction()
       } catch (error) {
         console.error('Error:', error);
         alert('Error deleting item');
@@ -60,7 +93,7 @@ interface ToDoTableProps{
           throw new Error('Failed to update status');
         }
         alert('Great, you completed a task!!');
-        window.location.reload();
+        fetchFunction()
       } catch (error) {
         console.error('Error:', error);
         alert('Error updating status');
@@ -81,7 +114,7 @@ interface ToDoTableProps{
           throw new Error('Failed to update status');
         }
         alert('Status Updated');
-        window.location.reload();
+        fetchFunction()
       } catch (error) {
         console.error('Error:', error);
         alert('Error updating status');
@@ -91,31 +124,45 @@ interface ToDoTableProps{
     console.log('this is the to do data', toDos)
     return (
       <div>
-
-      <Table>
+      <Table >
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">Done</TableHead>
+            <TableHead>Done</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Priority</TableHead>
-            <TableHead className="text-right">Due Date</TableHead>
+            <TableHead>Creation Date</TableHead>
+            <TableHead >Due Date</TableHead>
             <TableHead>Done Date</TableHead>
             <TableHead>Actions</TableHead>
+            <TableHead>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="outline">SortBy: {sortBy}</Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" >
+                    <DropdownMenuLabel>Choose a Priority</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuRadioGroup value={sortBy} onValueChange={setSortBy}>
+                    <DropdownMenuRadioItem value="id">Id</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="due-date">Due Date</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="priority">Priority</DropdownMenuRadioItem>
+                    </DropdownMenuRadioGroup>
+                </DropdownMenuContent>
+            </DropdownMenu>
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {toDos.map((toDo:ToDo ) => (
             <TableRow key={toDo.id}>
-              <TableCell>{toDo.status ? <Checkbox checked onCheckedChange={()=>handleToDoUnDone(toDo.id)}/> : <Checkbox onCheckedChange={()=>{if(!toDo.status){handleToDoDone(toDo.id)}}}/>}</TableCell>
+              <TableCell>{toDo.status ? <Checkbox checked onCheckedChange={()=>handleToDoUnDone(toDo.id)}/> : <Checkbox onCheckedChange={()=>handleToDoDone(toDo.id)}/>}</TableCell>
               <TableCell>{toDo.name}</TableCell>
               <TableCell>{toDo.priority}</TableCell>
-              <TableCell className="text-right">{toDo.dueDate}</TableCell>
-              <TableCell>{toDo.doneDate ? <div>{toDo.doneDate}</div>: <X/>}</TableCell>
-              <TableCell className="items-start">
-                <Button variant={"link"} >Update</Button>
-                {/* {isOpen &&
-        <UpdateModal   />
-            } */}
+              <TableCell >{toDo.creationDate.toString()}</TableCell>
+              {toDo.dueDate? <TableCell >{toDo.dueDate.toString()}</TableCell>:<TableCell ><X/></TableCell>}
+              <TableCell >{toDo.doneDate ? <div>{toDo.doneDate.toString()}</div>: <X/>}</TableCell>
+              <TableCell >
+                <Button variant={"link"} onClick={()=>{setSelectedToDo(toDo);setIsModalOpen(true); console.log("toDo sent", toDo)}}>Update</Button>
                 <Button variant={"link"} onClick={()=> handleDelete(toDo.id)}>Delete</Button>
               </TableCell>
             </TableRow>
@@ -123,8 +170,7 @@ interface ToDoTableProps{
         </TableBody>
         <TableFooter>
       <TableRow>
-        <TableCell colSpan={5}>Page {currentPage}</TableCell>
-        <TableCell className="text-right">
+        <TableCell colSpan={6} className="text-center">
           <Button onClick={()=>onPageChange(currentPage-1)} 
           disabled={currentPage === 0}
           >
@@ -140,6 +186,7 @@ interface ToDoTableProps{
       </TableRow>
     </TableFooter>
       </Table>
+      {(selectedToDo && isModalOpen) && <UpdateModal todo={selectedToDo} isOpen={isModalOpen} onClose={toggleModal} fetchFunction={fetchFunction}/>}
       </div>
     )
   }

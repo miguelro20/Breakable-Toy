@@ -4,7 +4,7 @@ export interface ToDo {
     description:string;
     priority:string;
     status:string;
-    dueDate: string;
-    doneDate: string;
+    dueDate: Date | null;
+    doneDate: string | null;
     creationDate:string;
   }

@@ -18,7 +18,7 @@ import {
   } from "@/components/ui/dropdown-menu"
 import { Calendar } from "@/components/ui/calendar"
 
-export default function NewToDo({lastId}:{lastId: Number}) {
+export default function NewToDo({lastId, fetchFunction}:{lastId: Number, fetchFunction: ()=>void}) {
     const [isOpen, setIsOpen]= useState(false)
     const [name, setName]= useState("")
     const [description, setDescription]= useState("")
@@ -32,20 +32,21 @@ export default function NewToDo({lastId}:{lastId: Number}) {
         setIsOpen(!isOpen);
       };
 
-      const handleUpdate = async () => {
+      const handleUpload = async () => {
         const payload = {
           id: newId,  
           name,
           description,
           priority,
-          status: state,
+          status: false,
           dueDate: date, 
+          creationDate: new Date(),
         };
         
         console.log("payload", JSON.stringify(payload))
 
         try {
-          const response = await fetch('http://localhost:9090/home/todos', {
+          const response = await fetch('http://localhost:9090/api/todos', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -59,7 +60,7 @@ export default function NewToDo({lastId}:{lastId: Number}) {
     
           const data = await response.json();
           console.log('Update successful:', data);
-          window.location.reload()
+          fetchFunction()
         } catch (error) {
           console.error('Error:', error);
           alert("Error creating To Do")
@@ -95,20 +96,6 @@ export default function NewToDo({lastId}:{lastId: Number}) {
                         </DropdownMenuRadioGroup>
                     </DropdownMenuContent>
                 </DropdownMenu>
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline">State: {state}</Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56">
-                        <DropdownMenuLabel>Choose a State</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuRadioGroup value={state} onValueChange={setState}>
-                        <DropdownMenuRadioItem value="">All</DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="True">Done</DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="False">UnDone</DropdownMenuRadioItem>
-                        </DropdownMenuRadioGroup>
-                    </DropdownMenuContent>
-                </DropdownMenu>
             <div className="flex justify-center text-center items-center">
             <Label>Pick a Due Date</Label>
               <Calendar
@@ -119,7 +106,7 @@ export default function NewToDo({lastId}:{lastId: Number}) {
                 className="flex items-center"
               />
               </div>
-          <Button onClick={handleUpdate}>Submit</Button>
+          <Button onClick={handleUpload}>Submit</Button>
               </Card>
             </DialogContent>
           </Dialog>

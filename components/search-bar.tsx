@@ -11,10 +11,15 @@ import {
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
 import { Label } from "./ui/label";;
-  import { useState, useEffect } from "react";
+  import { useState} from "react";
 import { Input } from "./ui/input";
 
-export default function SearchBar({onSearch}) {
+interface SearchBarProps {
+    onSearch: (name:string, priority:string, state:string)=>void,
+    onClear: ()=>void
+}
+
+export default function SearchBar({onSearch, onClear}: SearchBarProps) {
   const [priority, setPriority]= useState("")
   const [state, setState]= useState("")
   const [name, setName]= useState("")
@@ -58,6 +63,7 @@ export default function SearchBar({onSearch}) {
                 </DropdownMenu>
             </div>
                 <Button size='lg' className="flex bg-slate-200 text-black justify-end" onClick={()=>onSearch(name, priority, state)}>Search</Button>
+                <Button size='lg' className="flex bg-slate-200 text-black justify-end" onClick={()=>{onClear(); setPriority(""), setName(""), setState("")}}>Clear</Button>
             </div>
         </div>
     )
