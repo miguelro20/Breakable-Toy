@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# To Do Application Frontend 
 
 ## Getting Started
 
-First, run the development server:
+### This is a To Do Application which handles the following basic operations:
+- View my ToDos
+- Update current ToDos
+- Create To Dos
+- Mark ToDos as Done/Undone
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Technical Aspects
+- #### Application created using Next JS, TypeScript, React Context, ShadCN/UI and Jest for testing.
+- #### The application developer server runs on port 8080, this can be modified inside the package.json file.
+- #### Displayed data comes from the ToDo API, running on http://localhost:9090 .
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Architechture
+### Components
+#### Custom components are found inside app/components folder. This include:
+- ##### NewToDo. The main purpose of this component is creating new ToDos, obtaining the DueDate, the Name, Priority, and Description of the task. This component accepts two parameters, a lastId, to assign Ids to the new ToDo object, and fetchFunction, a function called when a ToDo creation succeeds to update the main ToDoTable, which displays the current ToDos in the DataBase.
+- ##### SearchBar. The main functionality of this component is establishing the filters for fetching ToDos, this is done by setting the name and/or priority and/or status in the filters. This component accepts two functions, onSearch and onClear, which determines the behaviour to follow when clicking on the search and clear buttons respectively. 
+- ##### ToDoTable. This component is made to display different ToDos in an orderly manner, it displays the ToDo Name, Status, Due Date, Creation Date, and if provided a Completion Date. The component has the ability to update and delete ToDos by clicking on the respective button, plus update their Done/Undone status by checking a box. This component needs an array of ToDos, the fetchFunction, a onPageChange (To hangle page change), and the number of total pages.
+- ##### TimeTable. This component is made to display the metrics of the average time to complete different tasks depending on their prority. This component accepts a metrics object, which contains the data to display.
+- ##### UpdateModal. This component is triggered from within the ToDoTable, and its purpose is to update the selected ToDo object inside the DataBase. To do so, it handles a PUT request, and accepts the ToDo object, isOpen which is a boolean value to open the modal, onClose a function to be triggered on close of the modal, fetchFunction a function that refetches the data within the ToDoTable if the PUT request was successful.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Hooks
+#### Hooks are found inside app/hooks and include:
+- ##### useFilters. This hook is used to access the value and function established within the FilterContext. The hook returns the State Variable filters and its setter setFilters, to be used anywhere needed.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+### Interfaces
+#### Interfaces are found inside /app/interfaces and define the different interfaces of objects used in the application, such as:
+- ##### ToDo: {id: number; name:string; description:string; priority:string; status:string; dueDate: Date | null; doneDate: string | null; creationDate:mstring; }
+- ##### Metrics: {totalAverage: Number, highAverage: Number, mediumAverage: Number, lowAverage: Number}
+- ##### FilterAttributes: {name: string; status: string; priority: string; page: string; size: string; sortBy: string; sortDir: string;}
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Context
+#### The context is established inside /app, and consists of:
+- ##### context.ts Where the filters context is created.
+- ##### providers.ts Where the context is wrapped inside providers function.
+- ##### layout.tsx Where the context is used so it is consistent across the app.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Integration
+#### All components, hooks and context are used in /app/page.tsx, the main page of the application. This component uses the filters within the context to call the api that fetches a list of ToDos and values from the backend, along with their metrics. This data is then used to render the custom components. The functions for changing pages, handling close of modals, and data fetching are defined within this document.
