@@ -25,12 +25,9 @@ export default function Home() {
   const fetchData= async() => {
     const params= new URLSearchParams(filters) 
     const response = await fetch(`http://localhost:9090/api/todos?${params}`)
-    console.log(response)
     const result= await response.json()
-    console.log(result)
     setToDoData(result)
     setLastId(result.list[result.list.length-1].id)
-    console.log("last id", result.list[result.list.length-1].id)
   }
   useEffect(()=> {
     fetchData()
@@ -39,9 +36,7 @@ export default function Home() {
   useEffect(()=> {
     const fetchMetrics= async() => {
       const response = await fetch(`http://localhost:9090/api/metrics`)
-      console.log(response)
       const result= await response.json()
-      console.log("Metrics",result)
       setMetrics(result)
     }
     fetchMetrics()
@@ -62,7 +57,9 @@ export default function Home() {
       name: "",
       priority: "",
       status:""})
-    )}
+    )
+    fetchData()
+  }
 
   const handlePageChange = (newPage: number) => {
     setFilters((prev)=> ({

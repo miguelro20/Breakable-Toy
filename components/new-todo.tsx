@@ -42,8 +42,6 @@ export default function NewToDo({lastId, fetchFunction}:{lastId: Number, fetchFu
           dueDate: date, 
           creationDate: new Date(),
         };
-        
-        console.log("payload", JSON.stringify(payload))
 
         try {
           const response = await fetch('http://localhost:9090/api/todos', {
@@ -59,7 +57,6 @@ export default function NewToDo({lastId, fetchFunction}:{lastId: Number, fetchFu
           }
     
           const data = await response.json();
-          console.log('Update successful:', data);
           alert("To Do created")
           toggleModal()
           fetchFunction()

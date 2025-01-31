@@ -65,7 +65,6 @@ interface ToDoTableProps{
             'Content-Type': 'application/json',
           },
         });
-        console.log(response)
   
         if (!response.ok) {
           throw new Error('Failed to delete');
@@ -87,7 +86,6 @@ interface ToDoTableProps{
             'Content-Type': 'application/json',
           },
         });
-        console.log(response)
   
         if (!response.ok) {
           throw new Error('Failed to update status');
@@ -95,7 +93,6 @@ interface ToDoTableProps{
         alert('Great, you completed a task!!');
         fetchFunction()
       } catch (error) {
-        console.error('Error:', error);
         alert('Error updating status');
       }
     };
@@ -108,7 +105,6 @@ interface ToDoTableProps{
             'Content-Type': 'application/json',
           },
         });
-        console.log(response)
   
         if (!response.ok) {
           throw new Error('Failed to update status');
@@ -120,8 +116,6 @@ interface ToDoTableProps{
         alert('Error updating status');
       }
     };
-
-    console.log('this is the to do data', toDos)
     return (
       <div className="p-4 bg-white rounded-lg shadow-md">
       <Table className="w-full border border-gray-200">
@@ -162,7 +156,7 @@ interface ToDoTableProps{
               {toDo.dueDate? <TableCell >{toDo.dueDate.toString()}</TableCell>:<TableCell ><X/></TableCell>}
               <TableCell >{toDo.doneDate ? <div>{toDo.doneDate.toString()}</div>: <X/>}</TableCell>
               <TableCell>
-                <Button variant={"link"} onClick={()=>{setSelectedToDo(toDo);setIsModalOpen(true); console.log("toDo sent", toDo)}}>Update</Button>
+                <Button variant={"link"} onClick={()=>{setSelectedToDo(toDo);setIsModalOpen(true)}}>Update</Button>
                 <Button variant={"link"} onClick={()=> handleDelete(toDo.id)}>Delete</Button>
               </TableCell>
             </TableRow>

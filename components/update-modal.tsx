@@ -1,3 +1,5 @@
+'use client'
+
 import { ToDo } from "@/app/interfaces/to-do"
 import { Button } from "./ui/button"
 import { Dialog, DialogContent, DialogTitle } from "./ui/dialog"
@@ -18,7 +20,6 @@ import { useState } from "react"
 
 export default function UpdateModal({todo, isOpen, onClose, fetchFunction}:{todo: ToDo, isOpen:boolean, onClose:()=>void, fetchFunction: ()=>void}){
 
-  console.log("recieved to do", todo)
   const [newPriority, setNewPriority]= useState(todo.priority)
   const [newName, setNewName]= useState(todo.name)
   const [date, setDate]= useState<Date>()
@@ -35,8 +36,6 @@ export default function UpdateModal({todo, isOpen, onClose, fetchFunction}:{todo
           creationDate: new Date(),
         }
 
-        console.log("payload", JSON.stringify(payload))
-
         try {
           const response = await fetch('http://localhost:9090/api/updateToDo', {
             method: 'PUT',
@@ -51,11 +50,9 @@ export default function UpdateModal({todo, isOpen, onClose, fetchFunction}:{todo
           }
     
           const data = await response.json();
-          console.log('Update successful:', data);
           onClose()
           fetchFunction()
         } catch (error) {
-          console.error('Error:', error);
           alert("Error updating To Do")
         }
       };
