@@ -131,13 +131,12 @@ interface ToDoTableProps{
             <TableHead>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="w-full">SortBy: {sortBy}</Button>
+                    <Button variant="outline" className="w-full">SortBy: {sortBy==="id"? "": sortBy}</Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" >
                     <DropdownMenuLabel>Choose a Priority</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuRadioGroup value={sortBy} onValueChange={setSortBy}>
-                    <DropdownMenuRadioItem value="id">Id</DropdownMenuRadioItem>
                     <DropdownMenuRadioItem value="due-date">Due Date</DropdownMenuRadioItem>
                     <DropdownMenuRadioItem value="priority">Priority</DropdownMenuRadioItem>
                     </DropdownMenuRadioGroup>
@@ -153,7 +152,13 @@ interface ToDoTableProps{
               <TableCell>{toDo.name}</TableCell>
               <TableCell className={`${toDo.priority=== "High" ? "bg-red-200" : toDo.priority=== "Low" ? "bg-green-200" : toDo.priority=== "Medium" ? "bg-yellow-200" :"bg-gray-100"} `}>{toDo.priority}</TableCell>
               <TableCell >{toDo.creationDate.toString()}</TableCell>
-              {toDo.dueDate? <TableCell >{toDo.dueDate.toString()}</TableCell>:<TableCell ><X/></TableCell>}
+              {toDo.dueDate? 
+              <TableCell className={!toDo.dueDate ? "bg-gray-100":
+                (Math.ceil((new Date(toDo.dueDate).getTime() - new Date().getTime())/(1000*60*60*24))<=7) ? "bg-red-200":
+                (Math.ceil((new Date(toDo.dueDate).getTime() - new Date().getTime())/(1000*60*60*24))<=14) ? "bg-yellow-200":
+                "bg-green-200"}>
+                  {toDo.dueDate.toString()}</TableCell>:<TableCell ><X/>
+              </TableCell>}
               <TableCell >{toDo.doneDate ? <div>{toDo.doneDate.toString()}</div>: <X/>}</TableCell>
               <TableCell>
                 <Button variant={"link"} onClick={()=>{setSelectedToDo(toDo);setIsModalOpen(true)}}>Update</Button>
