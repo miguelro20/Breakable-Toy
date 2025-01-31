@@ -52,6 +52,7 @@ export default function UpdateModal({todo, isOpen, onClose, fetchFunction}:{todo
     
           const data = await response.json();
           console.log('Update successful:', data);
+          onClose()
           fetchFunction()
         } catch (error) {
           console.error('Error:', error);
@@ -59,12 +60,12 @@ export default function UpdateModal({todo, isOpen, onClose, fetchFunction}:{todo
         }
       };
     return (
-        <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent>
-          <Card>
-        <DialogTitle>Update To Do</DialogTitle>
+        <Dialog data-testid="update-modal" open={isOpen} onOpenChange={onClose} >
+        <DialogContent className="max-w-md p-6">
+          <Card className="p-4">
+        <DialogTitle className="text-xl font-bold mb-4">Update To Do</DialogTitle>
           <Label htmlFor="text" className="text-lg text-black">Name</Label>
-          <Input type="text" placeholder="Enter Name" className="ml-2 p-2 text-center rounded-md bg-white" onChange={(e)=> setNewName(e.target.value)} value={newName}/>
+          <Input type="text" placeholder="Enter Name" className=" p-2 text-center rounded-md bg-white" onChange={(e)=> setNewName(e.target.value)} value={newName}/>
           <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="outline">Priority: {newPriority}</Button>

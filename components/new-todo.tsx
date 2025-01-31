@@ -60,6 +60,8 @@ export default function NewToDo({lastId, fetchFunction}:{lastId: Number, fetchFu
     
           const data = await response.json();
           console.log('Update successful:', data);
+          alert("To Do created")
+          toggleModal()
           fetchFunction()
         } catch (error) {
           console.error('Error:', error);
@@ -70,17 +72,21 @@ export default function NewToDo({lastId, fetchFunction}:{lastId: Number, fetchFu
     return (
         <div>
             {!isOpen ? 
-            <Button onClick={toggleModal}><Check/>New To Do</Button>
+            <Button data-testid="new-todo-button" onClick={toggleModal} className="flex ml-4 items-center gap-2"><Check/>New To Do</Button>
             :
             <Dialog open={isOpen} onOpenChange={toggleModal}>
-            <DialogContent>
-              <Card>
-            <DialogTitle>Create a New ToDo</DialogTitle>
+            <DialogContent className="max-w-md p-6">
+              <Card className="p-4">
+            <DialogTitle className="text-xl font-bold mb-4">Create a New ToDo</DialogTitle>
+            <div className="flex flex-col gap-2">
               <Label htmlFor="text" className="text-lg text-black">Name</Label>
-              <Input type="text" placeholder="Enter Name" className="ml-2 p-2 text-center rounded-md bg-white" onChange={(e)=> setName(e.target.value)}/>
+              <Input type="text" placeholder="Enter Name" className=" p-2 text-center rounded-md bg-white" onChange={(e)=> setName(e.target.value)}/>
+            </div>
+            <div className="flex flex-col gap-2">
               <Label htmlFor="description" className="text-lg text-black">Description</Label>
-              <Input type="text" placeholder="Enter Description (max 120 chars.)" className="ml-2 p-2 text-center rounded-md bg-white" onChange={(e)=> setDescription(e.target.value)} maxLength={120}/>
-              <p>{description.length}/120 characters</p>
+              <Input type="text" placeholder="Enter Description (max 120 chars.)" className="p-2 text-center rounded-md bg-white" onChange={(e)=> setDescription(e.target.value)} maxLength={120}/>
+              <p className="text-sm text-gray-500">{description.length}/120 characters</p>
+            </div>
               <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline">Priority: {priority}</Button>

@@ -25,7 +25,7 @@ export default function SearchBar({onSearch, onClear}: SearchBarProps) {
   const [name, setName]= useState("")
 
     return (
-        <div className="border border-gray-300 rounded-md rounded-md p-4">
+        <div data-testid="search-bar" className="border border-gray-300 rounded-md rounded-md p-4">
             <div className="flex gap-4">
                 <div className="flex flex-col w-1/4 ">            
             <Label htmlFor="text" className="text-lg text-black mb-1">Name</Label>
@@ -50,7 +50,7 @@ export default function SearchBar({onSearch, onClear}: SearchBarProps) {
                 </DropdownMenu>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="outline">State: {state}</Button>
+                        <Button variant="outline">State: {state==="True" ? "Done": state==="False"? "UnDone": ""}</Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56">
                         <DropdownMenuLabel>Choose a State</DropdownMenuLabel>

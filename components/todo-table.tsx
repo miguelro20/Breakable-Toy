@@ -123,21 +123,21 @@ interface ToDoTableProps{
 
     console.log('this is the to do data', toDos)
     return (
-      <div>
-      <Table >
+      <div className="p-4 bg-white rounded-lg shadow-md">
+      <Table className="w-full border border-gray-200">
         <TableHeader>
-          <TableRow>
-            <TableHead>Done</TableHead>
+          <TableRow className="bg-gray-300">
+            <TableHead className="text-center">Done</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Priority</TableHead>
             <TableHead>Creation Date</TableHead>
             <TableHead >Due Date</TableHead>
             <TableHead>Done Date</TableHead>
-            <TableHead>Actions</TableHead>
+            <TableHead className="">Actions</TableHead>
             <TableHead>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <Button variant="outline">SortBy: {sortBy}</Button>
+                    <Button variant="outline" className="w-full">SortBy: {sortBy}</Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" >
                     <DropdownMenuLabel>Choose a Priority</DropdownMenuLabel>
@@ -154,14 +154,14 @@ interface ToDoTableProps{
         </TableHeader>
         <TableBody>
           {toDos.map((toDo:ToDo ) => (
-            <TableRow key={toDo.id}>
-              <TableCell>{toDo.status ? <Checkbox checked onCheckedChange={()=>handleToDoUnDone(toDo.id)}/> : <Checkbox onCheckedChange={()=>handleToDoDone(toDo.id)}/>}</TableCell>
+            <TableRow key={toDo.id} className="hover:bg-gray-100">
+              <TableCell className="text-center">{toDo.status ? <Checkbox checked={true} onCheckedChange={()=>handleToDoUnDone(toDo.id)}/> : <Checkbox checked={false} onCheckedChange={()=>handleToDoDone(toDo.id)}/>}</TableCell>
               <TableCell>{toDo.name}</TableCell>
-              <TableCell>{toDo.priority}</TableCell>
+              <TableCell className={`${toDo.priority=== "High" ? "bg-red-200" : toDo.priority=== "Low" ? "bg-green-200" : toDo.priority=== "Medium" ? "bg-yellow-200" :"bg-gray-100"} `}>{toDo.priority}</TableCell>
               <TableCell >{toDo.creationDate.toString()}</TableCell>
               {toDo.dueDate? <TableCell >{toDo.dueDate.toString()}</TableCell>:<TableCell ><X/></TableCell>}
               <TableCell >{toDo.doneDate ? <div>{toDo.doneDate.toString()}</div>: <X/>}</TableCell>
-              <TableCell >
+              <TableCell>
                 <Button variant={"link"} onClick={()=>{setSelectedToDo(toDo);setIsModalOpen(true); console.log("toDo sent", toDo)}}>Update</Button>
                 <Button variant={"link"} onClick={()=> handleDelete(toDo.id)}>Delete</Button>
               </TableCell>
@@ -170,13 +170,13 @@ interface ToDoTableProps{
         </TableBody>
         <TableFooter>
       <TableRow>
-        <TableCell colSpan={6} className="text-center">
+        <TableCell colSpan={8} className="text-center">
           <Button onClick={()=>onPageChange(currentPage-1)} 
           disabled={currentPage === 0}
           >
             <ChevronLeft/>
           </Button>
-          <Label> {currentPage+1} </Label>
+          <Label className="text-lg"> {currentPage+1} </Label>
           <Button onClick={()=> onPageChange(currentPage+1)} 
           disabled={currentPage === totalPages-1}
           >
