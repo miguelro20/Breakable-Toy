@@ -1,82 +1,77 @@
 'use client'
-import NewToDo from "@/components/new-todo";
-import SearchBar from "@/components/search-bar";
-import { ToDoTable } from "@/components/todo-table";
-import TimeTable from "@/components/ttf-table";
+
+import { NewToDoView } from "@/app/views/todo/new-todo-view";
+import { SearchBarView } from "@/app/views/todo/search-bar-view";
+import { ToDoTableView } from "@/app/views/todo/todo-table-view";
+import { TimeTableView } from "@/app/views/todo/time-table-view";
 import { useState, useEffect } from "react";
 import { ToDo } from "./interfaces/to-do";
 import useFilters from "./hooks/useFilters";
 import { Metrics } from "./interfaces/metrics";
+import { fetchMetrics, fetchTodos } from "./controllers/todo-controller";
 
-
-interface toDoData {
+interface ToDoData {
   content: ToDo[],
   totalPages: number,
-
 }
 
 export default function Home() {
-  const [toDoData, setToDoData] = useState<toDoData>();
+  const [toDoData, setToDoData] = useState<ToDoData>();
   const {filters, setFilters}= useFilters()
   const [lastId, setLastId]= useState<Number>(100)
   const [metrics, setMetrics]=useState<Metrics>()
 
-
-  const fetchData= async() => {
-    const params= new URLSearchParams(filters) 
-    const response = await fetch(`http://localhost:9090/api/todos?${params}`)
-    const result= await response.json()
+  const fetchData = async () => {
+    const params = new URLSearchParams(filters) 
+    const result = await fetchTodos(params)
     setToDoData(result)
     setLastId(result.list[result.list.length-1].id)
   }
-  useEffect(()=> {
+
+  useEffect(() => {
     fetchData()
   }, [filters])
 
-  useEffect(()=> {
-    const fetchMetrics= async() => {
-      const response = await fetch(`http://localhost:9090/api/metrics`)
-      const result= await response.json()
+  useEffect(() => {
+    const getMetrics = async () => {
+      const result = await fetchMetrics()
       setMetrics(result)
     }
-    fetchMetrics()
+    getMetrics()
   }, [toDoData])
 
   const handleSearch = (name: string, priority: string, state: string) => {
-    setFilters((prev)=> ({
+    setFilters((prev) => ({
       ...prev,
       name,
       priority,
-      status:state
+      status: state
     }))
   }
 
-  const handleClear=() =>{
-    setFilters((prev)=> ({
+  const handleClear = () => {
+    setFilters((prev) => ({
       ...prev,
       name: "",
       priority: "",
-      status:""})
-    )
+      status: ""
+    }))
     fetchData()
   }
 
   const handlePageChange = (newPage: number) => {
-    setFilters((prev)=> ({
+    setFilters((prev) => ({
       ...prev,
       page: newPage.toString()
-  }))
-    
+    }))
   }
 
   return (
-
     <div>      
-      <SearchBar onSearch={handleSearch} onClear={handleClear}/>
-      <NewToDo lastId={lastId} fetchFunction={fetchData}/>
-      {toDoData && <ToDoTable toDos={toDoData.content} onPageChange={handlePageChange} totalPages={toDoData.totalPages} fetchFunction={fetchData}/>}
-      <TimeTable metrics={metrics}/>
+      <SearchBarView onSearch={handleSearch} onClear={handleClear}/>
+      <NewToDoView lastId={lastId} fetchFunction={fetchData}/>
+      {toDoData && <ToDoTableView toDos={toDoData.content} onPageChange={handlePageChange} totalPages={toDoData.totalPages} fetchFunction={fetchData}/>}
+      <TimeTableView metrics={metrics}/>
     </div>
-  
   );
 }
