@@ -18,40 +18,69 @@ import {
   } from "@/components/ui/dropdown-menu"
 import { Calendar } from "@/components/ui/calendar"
 import { createTodo } from "@/app/controllers/todo-controller"
-
-interface NewToDoProps {
-    lastId: Number
-    fetchFunction: () => void
-}
+import { NewToDoProps, NewTodoState } from "@/app/interfaces/to-do"
 
 export function NewToDoView({lastId, fetchFunction}: NewToDoProps) {
-    const [isOpen, setIsOpen]= useState(false)
-    const [name, setName]= useState("")
-    const [description, setDescription]= useState("")
-    const [priority, setPriority]= useState("")
-    const [date, setDate]= useState<Date>()
+    const [state, setState] = useState<NewTodoState>({
+        isOpen: false,
+        name: "",
+        description: "",
+        priority: "",
+        date: undefined
+    });
 
     const newId = +lastId + 1
 
-    const toggleModal = () => {
-        setIsOpen(!isOpen);
+    const handleToggleModal = () => {
+        setState(prev => ({
+            ...prev,
+            isOpen: !prev.isOpen
+        }));
+    };
+
+    const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setState(prev => ({
+            ...prev,
+            name: e.target.value
+        }));
+    };
+
+    const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setState(prev => ({
+            ...prev,
+            description: e.target.value
+        }));
+    };
+
+    const handlePriorityChange = (value: string) => {
+        setState(prev => ({
+            ...prev,
+            priority: value
+        }));
+    };
+
+    const handleDateChange = (date: Date | undefined) => {
+        setState(prev => ({
+            ...prev,
+            date
+        }));
     };
 
     const handleUpload = async () => {
         const payload = {
             id: newId,  
-            name,
-            description,
-            priority,
-            status: false,
-            dueDate: date, 
-            creationDate: new Date(),
+            name: state.name,
+            description: state.description,
+            priority: state.priority,
+            status: "false",
+            dueDate: state.date,
+            creationDate: new Date().toISOString(),
         };
 
         try {
             await createTodo(payload);
             alert("To Do created");
-            toggleModal();
+            handleToggleModal();
             fetchFunction();
         } catch (error) {
             console.error('Error:', error);
@@ -61,12 +90,16 @@ export function NewToDoView({lastId, fetchFunction}: NewToDoProps) {
     
     return (
         <div>
-            {!isOpen ? 
-                <Button data-testid="new-todo-button" onClick={toggleModal} className="flex ml-4 items-center gap-2">
+            {!state.isOpen ? 
+                <Button 
+                    data-testid="new-todo-button" 
+                    onClick={handleToggleModal} 
+                    className="flex ml-4 items-center gap-2"
+                >
                     <Check/>New To Do
                 </Button>
                 :
-                <Dialog open={isOpen} onOpenChange={toggleModal}>
+                <Dialog open={state.isOpen} onOpenChange={handleToggleModal}>
                     <DialogContent className="max-w-md p-6">
                         <Card className="p-4">
                             <DialogTitle className="text-xl font-bold mb-4">Create a New ToDo</DialogTitle>
@@ -76,7 +109,8 @@ export function NewToDoView({lastId, fetchFunction}: NewToDoProps) {
                                     type="text" 
                                     placeholder="Enter Name" 
                                     className="p-2 text-center rounded-md bg-white" 
-                                    onChange={(e)=> setName(e.target.value)}
+                                    onChange={handleNameChange}
+                                    value={state.name}
                                 />
                             </div>
                             <div className="flex flex-col gap-2">
@@ -85,19 +119,20 @@ export function NewToDoView({lastId, fetchFunction}: NewToDoProps) {
                                     type="text" 
                                     placeholder="Enter Description (max 120 chars.)" 
                                     className="p-2 text-center rounded-md bg-white" 
-                                    onChange={(e)=> setDescription(e.target.value)} 
+                                    onChange={handleDescriptionChange} 
                                     maxLength={120}
+                                    value={state.description}
                                 />
-                                <p className="text-sm text-gray-500">{description.length}/120 characters</p>
+                                <p className="text-sm text-gray-500">{state.description.length}/120 characters</p>
                             </div>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button variant="outline">Priority: {priority}</Button>
+                                    <Button variant="outline">Priority: {state.priority}</Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className="w-56">
                                     <DropdownMenuLabel>Choose a Priority</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuRadioGroup value={priority} onValueChange={setPriority}>
+                                    <DropdownMenuRadioGroup value={state.priority} onValueChange={handlePriorityChange}>
                                         <DropdownMenuRadioItem value="">All</DropdownMenuRadioItem>
                                         <DropdownMenuRadioItem value="High">High</DropdownMenuRadioItem>
                                         <DropdownMenuRadioItem value="Medium">Medium</DropdownMenuRadioItem>
@@ -109,8 +144,8 @@ export function NewToDoView({lastId, fetchFunction}: NewToDoProps) {
                                 <Label>Pick a Due Date</Label>
                                 <Calendar
                                     mode="single"
-                                    selected={date}
-                                    onSelect={setDate}
+                                    selected={state.date}
+                                    onSelect={handleDateChange}
                                     initialFocus
                                     className="flex items-center"
                                 />
@@ -122,4 +157,4 @@ export function NewToDoView({lastId, fetchFunction}: NewToDoProps) {
             }
         </div>
     )
-} 
+}

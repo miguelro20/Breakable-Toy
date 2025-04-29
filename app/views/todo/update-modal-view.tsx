@@ -1,6 +1,6 @@
 'use client'
 
-import { ToDo } from "@/app/interfaces/to-do"
+import { ToDo, UpdateModalProps, UpdateModalState } from "@/app/interfaces/to-do"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { Card } from "@/components/ui/card"
@@ -19,30 +19,42 @@ import { Calendar } from "@/components/ui/calendar"
 import { useState } from "react"
 import { updateTodo } from "@/app/controllers/todo-controller"
 
-interface UpdateModalProps {
-    todo: ToDo
-    isOpen: boolean
-    onClose: () => void
-    fetchFunction: () => void
-}
-
 export function UpdateModalView({todo, isOpen, onClose, fetchFunction}: UpdateModalProps) {
-    const [newPriority, setNewPriority]= useState(todo.priority)
-    const [newName, setNewName]= useState(todo.name)
-    const [date, setDate]= useState<Date>()
+    const [state, setState] = useState<UpdateModalState>({
+        name: todo.name,
+        priority: todo.priority,
+        date: todo.dueDate
+    });
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setNewName(e.target.value);
+        setState(prev => ({
+            ...prev,
+            name: e.target.value
+        }));
+    };
+
+    const handlePriorityChange = (value: string) => {
+        setState(prev => ({
+            ...prev,
+            priority: value
+        }));
+    };
+
+    const handleDateChange = (date: Date | undefined) => {
+        setState(prev => ({
+            ...prev,
+            date
+        }));
     };
 
     const handleUpdate = async () => {
         const payload = {
             id: todo.id,
-            name: newName,
+            name: state.name,
             description: todo.description,
-            priority: newPriority,
+            priority: state.priority,
             status: todo.status,
-            dueDate: date,
+            dueDate: state.date,
             doneDate: null,
             creationDate: new Date().toISOString(),
         }
@@ -67,16 +79,16 @@ export function UpdateModalView({todo, isOpen, onClose, fetchFunction}: UpdateMo
                         placeholder="Enter Name" 
                         className="p-2 text-center rounded-md bg-white" 
                         onChange={handleNameChange} 
-                        value={newName}
+                        value={state.name}
                     />
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="outline">Priority: {newPriority}</Button>
+                            <Button variant="outline">Priority: {state.priority}</Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-56">
                             <DropdownMenuLabel>Choose a Priority</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuRadioGroup value={newPriority} onValueChange={setNewPriority}>
+                            <DropdownMenuRadioGroup value={state.priority} onValueChange={handlePriorityChange}>
                                 <DropdownMenuRadioItem value="">All</DropdownMenuRadioItem>
                                 <DropdownMenuRadioItem value="High">High</DropdownMenuRadioItem>
                                 <DropdownMenuRadioItem value="Medium">Medium</DropdownMenuRadioItem>
@@ -86,8 +98,8 @@ export function UpdateModalView({todo, isOpen, onClose, fetchFunction}: UpdateMo
                     </DropdownMenu>
                     <Calendar
                         mode="single"
-                        selected={date}
-                        onSelect={setDate}
+                        selected={state.date}
+                        onSelect={handleDateChange}
                         initialFocus
                     />
                     <Button onClick={handleUpdate}>Submit</Button>
@@ -95,4 +107,4 @@ export function UpdateModalView({todo, isOpen, onClose, fetchFunction}: UpdateMo
             </DialogContent>
         </Dialog>
     )
-} 
+}

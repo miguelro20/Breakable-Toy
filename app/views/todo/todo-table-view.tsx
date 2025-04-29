@@ -202,4 +202,4 @@ export function ToDoTableView({toDos, onPageChange, totalPages, fetchFunction}: 
       }
       </div>
     )
-  } 
+  }

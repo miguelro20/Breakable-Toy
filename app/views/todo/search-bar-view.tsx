@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from "@/components/ui/button";
-import { SearchBarProps } from "@/app/interfaces/to-do";
+import { SearchBarProps, SearchBarState } from "@/app/interfaces/to-do";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -16,28 +16,49 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 
 export function SearchBarView({onSearch, onClear}: SearchBarProps) {
-    const [priority, setPriority]= useState("")
-    const [state, setState]= useState("")
-    const [name, setName]= useState("")
+    const [state, setState] = useState<SearchBarState>({
+        priority: "",
+        state: "",
+        name: ""
+    });
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setName(e.target.value);
+        setState(prev => ({
+            ...prev,
+            name: e.target.value
+        }));
+    };
+
+    const handlePriorityChange = (value: string) => {
+        setState(prev => ({
+            ...prev,
+            priority: value
+        }));
+    };
+
+    const handleStateChange = (value: string) => {
+        setState(prev => ({
+            ...prev,
+            state: value
+        }));
     };
 
     const handleSearch = () => {
-        onSearch(name, priority, state);
+        onSearch(state.name, state.priority, state.state);
     };
 
     const handleClear = () => {
+        setState({
+            priority: "",
+            state: "",
+            name: ""
+        });
         onClear();
-        setPriority("");
-        setName("");
-        setState("");
     };
 
     const getStateLabel = () => {
-        if (state === "True") return "Done";
-        if (state === "False") return "UnDone";
+        if (state.state === "True") return "Done";
+        if (state.state === "False") return "UnDone";
         return "";
     };
 
@@ -51,18 +72,19 @@ export function SearchBarView({onSearch, onClear}: SearchBarProps) {
                         placeholder="Enter Name" 
                         className="p-2 text-center rounded-md bg-white border border-gray-300" 
                         onChange={handleNameChange}
+                        value={state.name}
                     />
                 </div>
                 <div>
                     <div className="flex gap-4">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="outline">Priority: {priority}</Button>
+                                <Button variant="outline">Priority: {state.priority}</Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="w-56">
                                 <DropdownMenuLabel>Choose a Priority</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuRadioGroup value={priority} onValueChange={setPriority}>
+                                <DropdownMenuRadioGroup value={state.priority} onValueChange={handlePriorityChange}>
                                     <DropdownMenuRadioItem value="">All</DropdownMenuRadioItem>
                                     <DropdownMenuRadioItem value="High">High</DropdownMenuRadioItem>
                                     <DropdownMenuRadioItem value="Medium">Medium</DropdownMenuRadioItem>
@@ -77,7 +99,7 @@ export function SearchBarView({onSearch, onClear}: SearchBarProps) {
                             <DropdownMenuContent className="w-56">
                                 <DropdownMenuLabel>Choose a State</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuRadioGroup value={state} onValueChange={setState}>
+                                <DropdownMenuRadioGroup value={state.state} onValueChange={handleStateChange}>
                                     <DropdownMenuRadioItem value="">All</DropdownMenuRadioItem>
                                     <DropdownMenuRadioItem value="True">Done</DropdownMenuRadioItem>
                                     <DropdownMenuRadioItem value="False">UnDone</DropdownMenuRadioItem>
@@ -105,4 +127,4 @@ export function SearchBarView({onSearch, onClear}: SearchBarProps) {
             </div>
         </div>
     )
-} 
+}
