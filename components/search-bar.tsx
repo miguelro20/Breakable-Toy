@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from "./ui/button";
+import { SearchBarProps } from "@/app/interfaces/to-do";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -13,11 +14,6 @@ import {
 import { Label } from "./ui/label";;
   import { useState} from "react";
 import { Input } from "./ui/input";
-
-interface SearchBarProps {
-    onSearch: (name:string, priority:string, state:string)=>void,
-    onClear: ()=>void
-}
 
 export default function SearchBar({onSearch, onClear}: SearchBarProps) {
   const [priority, setPriority]= useState("")

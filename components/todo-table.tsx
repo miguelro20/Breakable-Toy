@@ -1,4 +1,4 @@
-import { ToDo } from "@/app/interfaces/to-do"
+import { ToDo, ToDoTableProps } from "@/app/interfaces/to-do"
 import {
     Table,
     TableBody,
@@ -25,13 +25,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
   
-interface ToDoTableProps{
-  toDos:ToDo[], 
-  onPageChange:(currentPage:number)=> void, 
-  totalPages: number
-  fetchFunction: ()=>void
-}
-  export function ToDoTable({toDos, onPageChange, totalPages, fetchFunction}: ToDoTableProps) {
+export function ToDoTable({toDos, onPageChange, totalPages, fetchFunction}: ToDoTableProps) {
 
 
     const [isModalOpen, setIsModalOpen]= useState(false)
