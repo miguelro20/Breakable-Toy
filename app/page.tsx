@@ -66,7 +66,7 @@ export default function Home() {
     setFilters((prev) => ({
       ...prev,
       page: newPage.toString()
-    }))
+  }))
   }
 
   return (

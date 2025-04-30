@@ -1,20 +1,25 @@
 import {beforeEach, describe, expect, test, vi} from "vitest"
-import { fireEvent, render, screen } from '@testing-library/react'
-import NewToDo from '@/components/new-todo'
+import { fireEvent, render, screen, cleanup } from '@testing-library/react'
+import { NewToDoView } from '@/app/views/todo/new-todo-view'
 
 describe("NewToDo Component", () => {
-  const mockFetchFunction= vi.fn()
+  const mockFetchFunction = vi.fn()
 
-  beforeEach(()=> {
+  beforeEach(() => {
+    cleanup()
     vi.clearAllMocks()
   })
-  render(<NewToDo lastId={1} fetchFunction={mockFetchFunction}/>)
   
-  test("renders button", ()=> {
-    expect(screen.getByText(/New To Do/i)).toBeDefined()
-  });
-  test("Modal Opens", ()=> {
-    fireEvent.click(screen.getByTestId("new-todo-button"))
+  test("renders button", () => {
+    render(<NewToDoView lastId={1} fetchFunction={mockFetchFunction}/>)
+    const buttons = screen.getAllByTestId("new-todo-button")
+    expect(buttons.length).toBe(1)
+  })
+
+  test("Modal Opens", () => {
+    render(<NewToDoView lastId={1} fetchFunction={mockFetchFunction}/>)
+    const button = screen.getAllByTestId("new-todo-button")[0]
+    fireEvent.click(button)
     expect(screen.getByText(/Create a New ToDo/i)).toBeDefined()
-  });
+  })
 })

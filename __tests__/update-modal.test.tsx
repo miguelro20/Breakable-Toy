@@ -1,19 +1,39 @@
 import {beforeEach, describe, expect, test, vi} from "vitest"
-import { fireEvent, render, screen } from '@testing-library/react'
-import NewToDo from '@/components/new-todo'
-import UpdateModal from "@/components/update-modal"
+import { render, screen } from '@testing-library/react'
+import { UpdateModalView } from "@/app/views/todo/update-modal-view"
 import { ToDo } from "@/app/interfaces/to-do"
 
 describe("Update Modal Component", () => {
-  const mockFetchFunction= vi.fn()
+  const mockFetchFunction = vi.fn()
+  const todo = {
+    id: 1, 
+    name: "Task 1", 
+    description: "test task", 
+    priority: "High", 
+    status: "false",
+    dueDate: new Date("2025-10-25"), 
+    doneDate: null,
+    creationDate: "2025-10-25"
+  }
 
-  beforeEach(()=> {
+  beforeEach(() => {
     vi.clearAllMocks()
+    render(
+      <UpdateModalView 
+        todo={todo} 
+        isOpen={true} 
+        onClose={mockFetchFunction} 
+        fetchFunction={mockFetchFunction}
+      />
+    )
   })
-  const content= [{id:1, name: "Task 1", description: "test task", priority: "High", dueDate: "2025-10-25", creationDate:"2025-10-25"}]
-  render(<UpdateModal todo={content as unknown as ToDo} isOpen={true} onClose={mockFetchFunction} fetchFunction={mockFetchFunction}/>)
   
-  test("update modal render", ()=> {
+  test("update modal render", () => {
+    // Test for the dialog element using role
+    expect(screen.getByRole("dialog")).toBeDefined()
+    // Test for the title
     expect(screen.getByText(/Update To Do/i)).toBeDefined()
-  });
+    // Test for the name input
+    expect(screen.getByDisplayValue("Task 1")).toBeDefined()
+  })
 })

@@ -1,18 +1,17 @@
 import {beforeEach, describe, expect, test, vi} from "vitest"
-import { fireEvent, render, screen } from '@testing-library/react'
-import NewToDo from '@/components/new-todo'
-import SearchBar from "@/components/search-bar"
+import { render, screen } from '@testing-library/react'
+import { SearchBarView } from "@/app/views/todo/search-bar-view"
 
-describe("NewToDo Component", () => {
-  const mockOnClear= vi.fn()
-  const mockOnSearch= vi.fn()
+describe("SearchBar Component", () => {
+  const mockOnClear = vi.fn()
+  const mockOnSearch = vi.fn()
 
-  beforeEach(()=> {
+  beforeEach(() => {
     vi.clearAllMocks()
+    render(<SearchBarView onClear={mockOnClear} onSearch={mockOnSearch}/>)
   })
-  render(<SearchBar onClear={mockOnClear} onSearch={mockOnSearch}/>)
   
-  test("renders SearchBar", ()=> {
+  test("renders SearchBar", () => {
     expect(screen.getByTestId("search-bar")).toBeDefined()
-  });
+  })
 })

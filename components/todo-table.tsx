@@ -25,7 +25,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
   
-export function ToDoTable({toDos, onPageChange, totalPages, fetchFunction}: ToDoTableProps) {
+  export function ToDoTable({toDos, onPageChange, totalPages, fetchFunction}: ToDoTableProps) {
 
 
     const [isModalOpen, setIsModalOpen]= useState(false)
