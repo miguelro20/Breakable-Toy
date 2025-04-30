@@ -22,7 +22,10 @@ export default function Home() {
   const [metrics, setMetrics]=useState<Metrics>()
 
   const fetchData = async () => {
-    const params = new URLSearchParams(filters) 
+    const params = new URLSearchParams(Object.entries(filters).reduce((acc, [key, value]) => ({
+      ...acc,
+      [key]: value.toString()
+    }), {} as Record<string, string>));
     const result = await fetchTodos(params)
     setToDoData(result)
     setLastId(result.list[result.list.length-1].id)
