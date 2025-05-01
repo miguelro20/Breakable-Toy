@@ -1,6 +1,6 @@
 'use client'
 
-import { ToDo, UpdateModalProps, UpdateModalState } from "@/app/interfaces/to-do"
+import { UpdateModalProps, UpdateModalState } from "@/app/interfaces/to-do"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { Card } from "@/components/ui/card"
@@ -63,7 +63,7 @@ export function UpdateModalView({todo, isOpen, onClose, fetchFunction}: UpdateMo
             await updateTodo(payload);
             onClose();
             fetchFunction();
-        } catch (error) {
+        } catch {
             alert("Error updating To Do");
         }
     };

@@ -1,6 +1,4 @@
-
 import { ToDo } from "../interfaces/to-do"
-import { Metrics } from "../interfaces/metrics"
 
 export async function fetchTodos(filters: URLSearchParams) {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/todos?${filters}`)

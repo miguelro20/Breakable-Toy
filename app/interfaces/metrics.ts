@@ -1,6 +1,6 @@
 export interface Metrics {
-    totalAverage: Number,
-    highAverage: Number,
-    mediumAverage: Number,
-    lowAverage: Number
+    totalAverage: number,
+    highAverage: number,
+    mediumAverage: number,
+    lowAverage: number
 }

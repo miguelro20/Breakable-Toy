@@ -1,10 +1,10 @@
 'use client'
 
-import { useState } from "react"
+import { useState, ReactNode } from "react"
 import { FilterContext } from "./context"
 import { FilterAttributes } from "./interfaces/filter-attributes"
 
-export function Providers({ children }: {children: any}) {
+export function Providers({ children }: { children: ReactNode }) {
       const [filtersInContext,setFiltersInContext]=useState<FilterAttributes>({
         name: '',
         status:'',

@@ -12,7 +12,7 @@ import {
   } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight, X} from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { UpdateModalView } from "./update-modal-view"
@@ -40,12 +40,12 @@ export function ToDoTableView({toDos, onPageChange, totalPages, fetchFunction}: 
       setSelectedToDo(null)
     };
 
-    const handleSortBy = () => {
+    const handleSortBy = useCallback(() => {
       setFilters((prev)=> ({
         ...prev,
         sortBy
       }))
-    }
+    }, [sortBy, setFilters])
 
     const handleUpdateClick = (todo: ToDo) => {
       setSelectedToDo(todo);
@@ -76,7 +76,7 @@ export function ToDoTableView({toDos, onPageChange, totalPages, fetchFunction}: 
         } else {
           throw new Error('Failed to update status');
         }
-      } catch (error) {
+      } catch {
         alert('Error updating status');
       }
     };
@@ -115,7 +115,7 @@ export function ToDoTableView({toDos, onPageChange, totalPages, fetchFunction}: 
 
     useEffect(()=> {
         handleSortBy()
-    }, [sortBy])
+    }, [sortBy, handleSortBy])
 
     return (
       <div className="p-4 bg-white rounded-lg shadow-md">

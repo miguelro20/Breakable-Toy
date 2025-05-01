@@ -8,7 +8,7 @@ describe("TimeTable Component", () => {
     highAverage: 10,
     mediumAverage: 20,
     lowAverage: 2
-  }
+}
 
   beforeEach(() => {
     vi.clearAllMocks()
