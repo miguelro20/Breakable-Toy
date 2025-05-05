@@ -41,7 +41,7 @@ describe("ToDo Integration", () => {
     // Render both components
     render(
       <div>
-        <NewToDoView lastId={1} fetchFunction={mockFetchFunction} />
+        <NewToDoView fetchFunction={mockFetchFunction} />
         <ToDoTableView 
           toDos={mockToDos} 
           totalPages={1} 
@@ -69,7 +69,6 @@ describe("ToDo Integration", () => {
     // Wait for the createTodo function to be called
     await waitFor(() => {
       expect(createTodo).toHaveBeenCalledWith({
-        id: 2,
         name: "New Task",
         description: "new task",
         priority: "",
@@ -90,7 +89,7 @@ describe("ToDo Integration", () => {
     // Render both components
     render(
       <div>
-        <NewToDoView lastId={1} fetchFunction={mockFetchFunction} />
+        <NewToDoView fetchFunction={mockFetchFunction} />
         <ToDoTableView 
           toDos={mockToDos} 
           totalPages={1} 

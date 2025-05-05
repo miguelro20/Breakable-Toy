@@ -11,13 +11,13 @@ describe("NewToDo Component", () => {
   })
   
   test("renders button", () => {
-    render(<NewToDoView lastId={1} fetchFunction={mockFetchFunction}/>)
+    render(<NewToDoView fetchFunction={mockFetchFunction}/>)
     const buttons = screen.getAllByTestId("new-todo-button")
     expect(buttons.length).toBe(1)
   })
 
   test("Modal Opens", () => {
-    render(<NewToDoView lastId={1} fetchFunction={mockFetchFunction}/>)
+    render(<NewToDoView fetchFunction={mockFetchFunction}/>)
     const button = screen.getAllByTestId("new-todo-button")[0]
     fireEvent.click(button)
     expect(screen.getByText(/Create a New ToDo/i)).toBeDefined()
