@@ -18,7 +18,7 @@ interface ToDoData {
 export default function Home() {
   const [toDoData, setToDoData] = useState<ToDoData>();
   const {filters, setFilters}= useFilters()
-  const [lastId, setLastId]= useState<number>(100)
+
   const [metrics, setMetrics]=useState<Metrics>()
 
   const fetchData = useCallback(async () => {
@@ -28,7 +28,6 @@ export default function Home() {
     }), {} as Record<string, string>));
     const result = await fetchTodos(params)
     setToDoData(result)
-    setLastId(result.list[result.list.length-1].id)
   }, [filters])
 
   useEffect(() => {
@@ -72,7 +71,7 @@ export default function Home() {
   return (
     <div>      
       <SearchBarView onSearch={handleSearch} onClear={handleClear}/>
-      <NewToDoView lastId={lastId} fetchFunction={fetchData}/>
+      <NewToDoView  fetchFunction={fetchData}/>
       {toDoData && <ToDoTableView toDos={toDoData.content} onPageChange={handlePageChange} totalPages={toDoData.totalPages} fetchFunction={fetchData}/>}
       <TimeTableView metrics={metrics}/>
     </div>

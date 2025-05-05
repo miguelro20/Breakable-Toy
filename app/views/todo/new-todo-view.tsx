@@ -20,7 +20,7 @@ import { Calendar } from "@/components/ui/calendar"
 import { createTodo } from "@/app/controllers/todo-controller"
 import { NewToDoProps, NewTodoState } from "@/app/interfaces/to-do"
 
-export function NewToDoView({lastId, fetchFunction}: NewToDoProps) {
+export function NewToDoView({fetchFunction}: NewToDoProps) {
     const [state, setState] = useState<NewTodoState>({
         isOpen: false,
         name: "",
@@ -29,7 +29,6 @@ export function NewToDoView({lastId, fetchFunction}: NewToDoProps) {
         date: undefined
     });
 
-    const newId = +lastId + 1
 
     const handleToggleModal = () => {
         setState(prev => ({
@@ -68,7 +67,6 @@ export function NewToDoView({lastId, fetchFunction}: NewToDoProps) {
 
     const handleUpload = async () => {
         const payload = {
-            id: newId,  
             name: state.name,
             description: state.description,
             priority: state.priority,

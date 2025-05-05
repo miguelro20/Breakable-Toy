@@ -22,7 +22,6 @@ export interface ToDoTableProps {
 }
 
 export interface NewToDoProps {
-    lastId: number
     fetchFunction: () => void
 }
 
